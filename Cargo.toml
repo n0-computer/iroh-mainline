@@ -22,18 +22,18 @@ unstable_signed_peers = []
 
 [dependencies]
 rand = "0.10"
-serde_bencode = "^0.2.4"
-serde = { version = "1.0.217", features = ["derive"] }
+serde_bencode = "0.2"
+serde = { version = "1", features = ["derive"] }
 serde_bytes = "0.11.15"
-crc = "3.2.1"
-sha1_smol = "1.0.1"
-ed25519-dalek = "=3.0.0-pre.6"
-tracing = "0.1"
-lru = { version = "0.13.0", default-features = false }
-dyn-clone = "1.0.18"
-tokio = { version = "1", default-features = false, features = ["sync", "net", "time", "rt", "macros"] }
+crc = "3"
+sha1_smol = "1"
+ed25519-dalek = "=3.0.0-pre.7"
+tracing = "0.1.40"
+lru = { version = "0.13", default-features = false }
+dyn-clone = "1"
+tokio = { version = "1.39", default-features = false, features = ["sync", "net", "time", "rt", "macros"] }
 futures-core = "0.3"
-n0-error = "0.1"
+n0-error = "1.0.0-rc.0"
 noq-udp = "0.10"
 
 [dev-dependencies]
@@ -46,7 +46,7 @@ rayon = "1.10"
 dashmap = "6.1"
 colored = "3.0.0"
 anyhow = "1"
-chrono = "0.4"
+chrono = "0.4.20"
 hex = "0.4"
 tokio = { version = "1", features = ["rt-multi-thread"] }
 

@@ -82,3 +82,24 @@ jobs:
     - name: Fail if formatting check failed
       if: steps.fmt.outcome == 'failure'
       run: exit 1
+
+  minimal-versions:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: dtolnay/rust-toolchain@nightly
+    - uses: dtolnay/rust-toolchain@stable
+    - name: Resolve to minimum versions
+      run: cargo +nightly -Z minimal-versions update
+    - name: Check lib at minimum versions
+      run: cargo check --lib --locked
+
+  cargo-deny:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: EmbarkStudios/cargo-deny-action@v2
+      with:
+        command: check
+        arguments: --workspace --all-features
+        command-arguments: "-Dwarnings"
