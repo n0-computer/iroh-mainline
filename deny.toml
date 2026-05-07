@@ -1,0 +1,23 @@
+[bans]
+multiple-versions = "allow"
+deny = [
+    { name = "native-tls" },
+    { name = "openssl" },
+]
+
+[licenses]
+allow = [
+    "Apache-2.0",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "MIT",
+    "Unicode-3.0",
+    "Unlicense",
+]
+
+[advisories]
+ignore = []
+
+[sources]
+allow-git = []
