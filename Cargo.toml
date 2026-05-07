@@ -34,7 +34,7 @@ dyn-clone = "1"
 tokio = { version = "1.39", default-features = false, features = ["sync", "net", "time", "rt", "macros"] }
 futures-core = "0.3"
 n0-error = "1.0.0-rc.0"
-noq-udp = "0.10"
+noq-udp = "1.0.0-rc.0"
 
 [dev-dependencies]
 clap = { version = "4.5.29", features = ["derive"] }
