@@ -3,7 +3,7 @@ name = "n0-mainline"
 version = "0.4.0"
 authors = ["n0 team", "Ruediger Klaehn <rklaehn@protonmail.com>", "nuh.dev"]
 edition = "2024"
-rust-version = "1.89"
+rust-version = "1.91"
 description = "Async BitTorrent Mainline DHT client"
 homepage = "https://github.com/n0-computer/n0-mainline"
 documentation = "https://docs.rs/n0-mainline"
@@ -27,14 +27,14 @@ serde = { version = "1", features = ["derive"] }
 serde_bytes = "0.11.15"
 crc = "3"
 sha1_smol = "1"
-ed25519-dalek = "=3.0.0-pre.7"
+ed25519-dalek = "=3.0.0-rc.0"
 tracing = "0.1.40"
-lru = { version = "0.16.3", default-features = false }
+lru = { version = "0.18", default-features = false }
 dyn-clone = "1"
 tokio = { version = "1.39", default-features = false, features = ["sync", "net", "time", "rt", "macros"] }
 futures-core = "0.3"
-n0-error = "1.0.0-rc.0"
-noq-udp = "1.0.0-rc.0"
+n0-error = "1.0.0"
+noq-udp = "1.0.0"
 
 [dev-dependencies]
 clap = { version = "4.5.29", features = ["derive"] }
