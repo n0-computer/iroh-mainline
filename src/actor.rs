@@ -108,7 +108,7 @@ impl Actor {
 
         let mut done_put_queries = self.check_done_put_queries();
 
-        for (_, query) in self.core.iterative_queries.iter_mut() {
+        for query in self.core.iterative_queries.values_mut() {
             query.visit_closest(&mut self.socket);
         }
 
