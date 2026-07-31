@@ -285,37 +285,35 @@ fn format_socket_message(msg: &str) -> String {
         if let Some(id) = extract_field(msg_type, "requester_id: Id(")
             .or_else(|| extract_field(msg_type, "requester_id: "))
         {
-            details.push_str(&format!("  Requester ID: {}\n", &id[..40].bright_yellow()));
+            details.push_str(&format!("  Requester ID: {}\n", id[..40].bright_yellow()));
         }
         if let Some(id) = extract_field(msg_type, "responder_id: Id(")
             .or_else(|| extract_field(msg_type, "responder_id: "))
         {
-            details.push_str(&format!("  Responder ID: {}\n", &id[..40].bright_yellow()));
+            details.push_str(&format!("  Responder ID: {}\n", id[..40].bright_yellow()));
         }
 
-        // Extract version if present (format it nicely)
+        // Extract version if present (format it nicely), trying both formats
         if let Some(version) = msg
             .split("version: Some([")
             .nth(1)
             .or_else(|| msg.split("version: [").nth(1))
-        // Try both formats
+            && let Some(version_end) = version.split("])").next()
         {
-            if let Some(version_end) = version.split("])").next() {
-                let version_nums: Vec<&str> = version_end
-                    .split(',')
-                    .map(|s| s.trim()) // Remove whitespace
-                    .collect();
+            let version_nums: Vec<&str> = version_end
+                .split(',')
+                .map(|s| s.trim()) // Remove whitespace
+                .collect();
 
-                if version_nums.len() >= 4 {
-                    let formatted_version = format!(
-                        "{}.{}.{}.{}",
-                        version_nums[0],
-                        version_nums[1],
-                        version_nums[2],
-                        version_nums[3].trim_end_matches(']') // Remove extra bracket if present
-                    );
-                    details.push_str(&format!("  Version: {}\n", formatted_version.bright_cyan()));
-                }
+            if version_nums.len() >= 4 {
+                let formatted_version = format!(
+                    "{}.{}.{}.{}",
+                    version_nums[0],
+                    version_nums[1],
+                    version_nums[2],
+                    version_nums[3].trim_end_matches(']') // Remove extra bracket if present
+                );
+                details.push_str(&format!("  Version: {}\n", formatted_version.bright_cyan()));
             }
         }
 

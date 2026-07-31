@@ -258,7 +258,7 @@ impl Core {
                 // allow this at all.
                 //
                 // Note that publishing the same value with the same signature is still allowed.
-                return Err(ConcurrencyError::NotMostRecent)?;
+                return Err(ConcurrencyError::NotMostRecent);
             } else if cas.is_none() {
                 // For unconditional puts (`cas: None`), accept the new request as long as
                 // it is not older than the in-flight request.
@@ -270,7 +270,7 @@ impl Core {
                     // Remove the inflight request, and create a new one.
                     self.put_queries.remove(target);
                 } else {
-                    return Err(ConcurrencyError::CasFailed)?;
+                    return Err(ConcurrencyError::CasFailed);
                 }
             };
         };

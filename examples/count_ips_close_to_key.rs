@@ -135,7 +135,7 @@ fn print_histogram(hits: HashMap<Ipv4Addr, u16>, lookup_count: usize) {
         })
         .collect();
 
-    for (_, percent) in percents.iter() {
+    for percent in percents.values() {
         histogram.add(*percent);
     }
 
