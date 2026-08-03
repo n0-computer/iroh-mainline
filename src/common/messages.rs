@@ -579,6 +579,11 @@ impl Message {
                         }
                         internal::DHTRequestSpecific::PutValue { arguments } => {
                             if let Some(k) = arguments.k {
+                                let (Some(seq), Some(sig)) = (arguments.seq, arguments.sig) else {
+                                    return Err(
+                                        DecodeMessageError::MissingMutablePutSequenceOrSignature,
+                                    );
+                                };
                                 RequestSpecific {
                                     requester_id: Id::from_bytes(arguments.id)?,
 
@@ -589,12 +594,8 @@ impl Message {
                                                 target: Id::from_bytes(arguments.target)?,
                                                 v: arguments.v,
                                                 k,
-                                                seq: arguments.seq.expect(
-                                                    "Put mutable message to have sequence number",
-                                                ),
-                                                sig: arguments.sig.expect(
-                                                    "Put mutable message to have a signature",
-                                                ),
+                                                seq,
+                                                sig,
                                                 salt: arguments.salt,
                                                 cas: arguments.cas,
                                             },
@@ -964,6 +965,10 @@ pub enum DecodeMessageError {
     #[error("Wrong number of bytes for signed peers")]
     /// Wrong number of bytes for signed peers
     InvalidSignedPeersEncodingLength,
+
+    #[error("Mutable put message must have a sequence number and a signature")]
+    /// Mutable put message must have a sequence number and a signature
+    MissingMutablePutSequenceOrSignature,
 }
 
 #[cfg(test)]
@@ -1299,5 +1304,37 @@ mod tests {
         let parsed_serde_msg = internal::DHTMessage::from_bytes(&bytes).unwrap();
         let parsed_msg = Message::from_serde_message(parsed_serde_msg).unwrap();
         assert_eq!(parsed_msg, original_msg);
+    }
+
+    /// A `put` query with a public key `k` but no `seq`/`sig` (an unsolicited,
+    /// signature-less packet) used to panic in `Message::from_bytes` on the
+    /// `Option::expect` for the missing `seq`, killing the DHT actor thread.
+    /// Decoding must instead return an error.
+    ///
+    /// Thanks to daniel@makrotopia.org for disclosure.
+    #[test]
+    fn test_put_with_key_but_no_seq_does_not_panic() {
+        let msg = internal::DHTMessage {
+            transaction_id: vec![0, 0, 0, 0],
+            version: None,
+            variant: internal::DHTMessageVariant::Request(internal::DHTRequestSpecific::PutValue {
+                arguments: internal::DHTPutValueRequestArguments {
+                    id: [1; 20],
+                    target: [0x11; 20],
+                    token: (*b"ZZZZ").into(),
+                    v: (*b"hi").into(),
+                    k: Some([0x33; 32]),
+                    sig: None,
+                    seq: None,
+                    cas: None,
+                    salt: None,
+                },
+            }),
+            ip: None,
+            read_only: None,
+        };
+
+        let bytes = msg.to_bytes().unwrap();
+        assert!(Message::from_bytes(&bytes).is_err());
     }
 }
